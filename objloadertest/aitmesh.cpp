@@ -63,7 +63,7 @@ bool aitMesh::loadFromObj(std::string path)
 					{
 						y = atoi(temp.c_str());
 						flipflop = !flipflop;
-						vertices.push_back(aitVertex(tempVertices[x], tempNormals[y])); // join the vertex and normal, then send to vertices
+						vertices.push_back(aitVertex(tempVertices[x-1], tempNormals[y-1])); // join the vertex and normal, then send to vertices
 					}
 				}
 				
