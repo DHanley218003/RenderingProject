@@ -17,13 +17,14 @@ bool aitMesh::loadFromObj(std::string path)
 	// temporary vectors to store data until it's joined into the final vector
 	std::vector<glm::vec3> tempVertices;
 	std::vector<glm::vec3> tempNormals;
-	std::string temp;
+	char temp[15];
 	char buff[BUFFSIZE];
 	float tempx, tempy, tempz; // used to create vertex and vertex normals
 	unsigned int x, y; // used to pair up vertex and vertex normals
 
 	std::ifstream infile(path);
 	std::stringstream ss;
+	std::stringstream ss2;
 
 	while(true)
 	{
@@ -33,9 +34,7 @@ bool aitMesh::loadFromObj(std::string path)
 		ss.clear();
 		ss.str(""); // clears and sets the string stream buffer to empty
 		ss << buff;
-		if(buff[0]=='o' || buff[0] == '#') // if comment or object name, ignore
-		{} // example input: o Cube
-		else if(buff[0]=='v') // if vector
+		if(buff[0]=='v') // if vector
 		{
 			if(buff[1]=='n') // if vector normal
 			{
@@ -49,26 +48,39 @@ bool aitMesh::loadFromObj(std::string path)
 				tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 		}
-		else if(buff[0]=='s') // TODO
-		{} // example input: s off
 		else if(buff[0]=='f') // if faces
 		{
+			ss >> temp;
+			for (unsigned int i = 0; i < 15; i++)
+			{
+				if (temp[i] == '/')
+					temp[i] = ' ';
+			}
+			ss2.clear();
+			ss2.str(""); // clears and sets the string stream buffer to empty
+			ss2 << temp;
 			bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
-			while (ss >> temp) // example input: f 1//1 2//1 3//1
+			while (ss2 >> temp) // example input: f 1//1 2//1 3//1
 			{
 				if (flipflop)
 				{
-					x = atoi(temp.c_str()); // must be converted to c string to use atoi
+					x = atoi(temp); // must be converted to c string to use atoi
 					flipflop = !flipflop;
 				}
 				else
 				{
-					y = atoi(temp.c_str());
+					y = atoi(temp);
 					flipflop = !flipflop;
 					vertices.push_back(aitVertex(tempVertices[x-1], tempNormals[y-1])); // join the vertex and normal, then send to vertices
 				}
 			}
 		}
+		else if (buff[0] == 'o' || buff[0] == '#') // if comment or object name, ignore
+		{
+		} // example input: o Cube
+		else if (buff[0] == 's') // TODO
+		{
+		} // example input: s off
 	}
 	return true;
 }
