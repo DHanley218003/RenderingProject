@@ -19,11 +19,9 @@ bool aitMesh::loadFromObj(std::string path)
 	vertices.push_back(v3);*/
 	std::vector<glm::vec3> tempVertices;
 	std::vector<glm::vec3> tempNormals;
+	std::string temp;
 	char buff[BUFFSIZE];
-	char buff2[BUFFSIZE];
-	float tempx;
-	float tempy;
-	float tempz;
+	float tempx, tempy, tempz;
 	unsigned int x, y;
 
 	std::ifstream infile(path);
@@ -38,29 +36,42 @@ bool aitMesh::loadFromObj(std::string path)
 		ss.clear();
 		ss.str("");
 		ss << buff;
-		ss >> buff2;
-		if(buff2[0]=='o' || buff2[0] == '#')
+		if(buff[0]=='o' || buff[0] == '#')
 		{}
-		if(buff2[0]=='v')
+		else if(buff[0]=='v')
 		{
-			if(buff2[1]=='n')
+			if(buff[1]=='n')
 			{
-				ss >> tempx >> tempy >> tempz;
+				ss >> temp >> tempx >> tempy >> tempz;
 				tempNormals.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 			else
 			{
-				ss >> tempx >> tempy >> tempz;
+				std::cout << ss.str() << "/n";
+				ss >> temp >> tempx >> tempy >> tempz;
 				tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 		}
-		if(buff2[0]=='s')
+		else if(buff[0]=='s')
 		{}
-		if(buff2[0]=='f')
+		else if(buff[0]=='f')
 		{
-			while (ss.rdbuf()->in_avail())
+			bool flipflop = true;
+			while (ss >> temp)
 			{
-				std::getline(buff, 9, "//");
+				if (temp != "" && temp != "/" && temp != "//")
+				{
+					if (flipflop)
+					{
+						x = atoi(temp.c_str());
+						flipflop = !flipflop;
+					}
+					else
+					{
+						y = atoi(temp.c_str());
+						flipflop = !flipflop;
+					}
+				}
 				vertices.push_back(aitVertex(tempVertices[x], tempNormals[y]));
 			}
 		}
