@@ -17,58 +17,53 @@ bool aitMesh::loadFromObj(std::string path)
 	vertices.push_back(v1);
 	vertices.push_back(v2);
 	vertices.push_back(v3);*/
-	std::vector<glm::vec3> vertices;
-	std::vector<glm::vec3> normals;
-	aitVertex tempVertex(glm::vec3(0.000000, 1.000000, 0.000000), glm::vec3(0.000000, 0.000000, 1.000000));
+	std::vector<glm::vec3> tempVertices;
+	std::vector<glm::vec3> tempNormals;
 	char buff[BUFFSIZE];
+	char buff2[BUFFSIZE];
 	float tempx;
 	float tempy;
 	float tempz;
+	unsigned int x, y;
 
 	std::ifstream infile(path);
 	std::stringstream ss;
+	std::stringstream ss2;
 
 	while(true)
 	{
 		if(infile.eof())
 			break;
 		infile.getline( buff, BUFFSIZE);
+		ss.clear();
+		ss.str("");
 		ss << buff;
-		ss.getline( buff, 9, ' ' );
-		if(buff[0]=='o' || buff[0] == '#')
+		ss >> buff2;
+		if(buff2[0]=='o' || buff2[0] == '#')
 		{}
-		if(buff[0]=='v')
+		if(buff2[0]=='v')
 		{
-			if(buff[1]=='n')
+			if(buff2[1]=='n')
 			{
-				ss.get(buff, 9, ' ');
-				tempx = atof(buff);
-				ss.get(buff, 9, ' ');
-				tempy = atof(buff);
-				ss.get(buff, 9, ' ');
-				tempz = atof(buff);
-				normals.push_back(glm::vec3(tempx, tempy, tempz));
+				ss >> tempx >> tempy >> tempz;
+				tempNormals.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 			else
 			{
-				ss.get(buff, 9, ' ');
-				tempx = atof(buff);
-				ss.get(buff, 9, ' ');
-				tempy = atof(buff);
-				ss.get(buff, 9, ' ');
-				tempz = atof(buff);
-				vertices.push_back(glm::vec3(tempx, tempy, tempz));
+				ss >> tempx >> tempy >> tempz;
+				tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 		}
-		if(buff[0]=='s')
+		if(buff2[0]=='s')
 		{}
-		if(buff[0]=='f')
-		{}
-	}
-	for(unsigned int i = 0; i < vertices.size(); i++)
-	{
-		tempVertex = (vertices[i], normals[i]);
-		vertices.push_back(tempVertex);
+		if(buff2[0]=='f')
+		{
+			while (ss.rdbuf()->in_avail())
+			{
+				std::getline(buff, 9, "//");
+				vertices.push_back(aitVertex(tempVertices[x], tempNormals[y]));
+			}
+		}
 	}
 	return true;
 }
