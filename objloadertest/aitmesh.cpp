@@ -8,6 +8,10 @@
 
 const unsigned int BUFFSIZE = 80; //each line should be less than 80 characters
 
+/* Declan Hanley - A00218003@student.ait.ie
+ * TODO: Change all C functions to C++ ones
+ * Read in f properly, currently still has slashes
+ */
 bool aitMesh::loadFromObj(std::string path)
 {
 	// temporary vectors to store data until it's joined into the final vector
@@ -52,21 +56,17 @@ bool aitMesh::loadFromObj(std::string path)
 			bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
 			while (ss >> temp) // example input: f 1//1 2//1 3//1
 			{
-				if (temp != "" && temp != "/" && temp != "//") // makes sure only numbers are in it
+				if (flipflop)
 				{
-					if (flipflop)
-					{
-						x = atoi(temp.c_str()); // must be converted to c string to use atoi
-						flipflop = !flipflop;
-					}
-					else
-					{
-						y = atoi(temp.c_str());
-						flipflop = !flipflop;
-						vertices.push_back(aitVertex(tempVertices[x-1], tempNormals[y-1])); // join the vertex and normal, then send to vertices
-					}
+					x = atoi(temp.c_str()); // must be converted to c string to use atoi
+					flipflop = !flipflop;
 				}
-				
+				else
+				{
+					y = atoi(temp.c_str());
+					flipflop = !flipflop;
+					vertices.push_back(aitVertex(tempVertices[x-1], tempNormals[y-1])); // join the vertex and normal, then send to vertices
+				}
 			}
 		}
 	}
