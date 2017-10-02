@@ -1,0 +1,36 @@
+﻿objloadertest.obj : error LNK2019: unresolved external symbol __imp_glewInit referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glewGetErrorString referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutInitWindowPosition referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutInitWindowSize referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutInitDisplayMode referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutMainLoop referenced in function main
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutSwapBuffers referenced in function "void __cdecl renderSceneCallBack(void)" (?renderSceneCallBack@@YAXXZ)
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutIdleFunc referenced in function "void __cdecl initializeGlutCallbacks(void)" (?initializeGlutCallbacks@@YAXXZ)
+objloadertest.obj : error LNK2019: unresolved external symbol __imp_glutDisplayFunc referenced in function "void __cdecl initializeGlutCallbacks(void)" (?initializeGlutCallbacks@@YAXXZ)
+objloadertest.obj : error LNK2019: unresolved external symbol __imp___glutInitWithExit referenced in function glutInit_ATEXIT_HACK
+objloadertest.obj : error LNK2019: unresolved external symbol __imp___glutCreateWindowWithExit referenced in function glutCreateWindow_ATEXIT_HACK
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewBindBuffer
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewBufferData
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGenBuffers
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewAttachShader
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewCompileShader
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewCreateProgram
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewCreateShader
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewDisableVertexAttribArray
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewEnableVertexAttribArray
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGetProgramInfoLog
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGetProgramiv
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGetShaderInfoLog
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGetShaderiv
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewGetUniformLocation
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewLinkProgram
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewShaderSource
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewUniform1f
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewUniform3fv
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewUniformMatrix4fv
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewUseProgram
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewValidateProgram
+objloadertest.obj : error LNK2001: unresolved external symbol __imp___glewVertexAttribPointer
+..\3rdparty\lib\glew32.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+..\3rdparty\lib\freeglut.lib : warning LNK4272: library machine type 'x86' conflicts with target machine type 'x64'
+C:\Users\Desktop\Desktop\RenderingProject\objloadertest\x64\Debug\objloadertest.exe : fatal error LNK1120: 33 unresolved externals

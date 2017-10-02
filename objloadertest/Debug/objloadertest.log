@@ -1,2 +1,7 @@
-﻿  aitmesh.cpp
-LINK : fatal error LNK1104: cannot open file 'glew32.lib'
+﻿  objloadertest.cpp
+  GLM: perspective function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  GLM: rotate function taking degrees as a parameter is deprecated. #define GLM_FORCE_RADIANS before including GLM headers to remove this message.
+  aitmesh.cpp
+  Generating Code...
+  objloadertest.vcxproj -> C:\Users\Desktop\Desktop\RenderingProject\objloadertest\Debug\objloadertest.exe
+  objloadertest.vcxproj -> Debug\objloadertest.pdb (Partial PDB)

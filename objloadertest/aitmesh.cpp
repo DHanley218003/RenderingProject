@@ -8,16 +8,14 @@
 
 const unsigned int BUFFSIZE = 80; //each line should be less than 80 characters
 
-/* Declan Hanley - A00218003@student.ait.ie
- * TODO: Change all C functions to C++ ones
- * Read in f properly, currently still has slashes
- */
+// Declan Hanley - A00218003@student.ait.ie
+
 bool aitMesh::loadFromObj(std::string path)
 {
 	// temporary vectors to store data until it's joined into the final vector
 	std::vector<glm::vec3> tempVertices;
 	std::vector<glm::vec3> tempNormals;
-	char temp[15];
+	char temp[15]; // used to discard first character, and for removing slashes for faces
 	char buff[BUFFSIZE];
 	float tempx, tempy, tempz; // used to create vertex and vertex normals
 	unsigned int x, y; // used to pair up vertex and vertex normals
@@ -43,42 +41,45 @@ bool aitMesh::loadFromObj(std::string path)
 			}
 			else
 			{
-				std::cout << ss.str() << "/n";
 				ss >> temp >> tempx >> tempy >> tempz;
 				tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
 			}
 		}
 		else if(buff[0]=='f') // if faces
 		{
-			ss >> temp;
-			for (unsigned int i = 0; i < 15; i++)
+			ss >> temp; // discard 'f' character
+			for (unsigned int j = 0; j < 3; j++) // run three times to fully define polygon
 			{
-				if (temp[i] == '/')
-					temp[i] = ' ';
-			}
-			ss2.clear();
-			ss2.str(""); // clears and sets the string stream buffer to empty
-			ss2 << temp;
-			bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
-			while (ss2 >> temp) // example input: f 1//1 2//1 3//1
-			{
-				if (flipflop)
+				ss >> temp;
+				for (unsigned int i = 0; i < 10; i++) // Changes all forward slashes to whitespace, then sends to a second stringstream
 				{
-					x = atoi(temp); // must be converted to c string to use atoi
-					flipflop = !flipflop;
+					if (temp[i] == '/')
+						temp[i] = ' ';
 				}
-				else
+				ss2.clear();
+				ss2.str(""); // clears and sets the string stream buffer to empty
+				ss2 << temp;
+				bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
+				while (ss2 >> temp) // example input: f 1//1 2//1 3//1
 				{
-					y = atoi(temp);
-					flipflop = !flipflop;
-					vertices.push_back(aitVertex(tempVertices[x-1], tempNormals[y-1])); // join the vertex and normal, then send to vertices
+					if (flipflop)
+					{
+						x = atoi(temp); // must be converted to c string to use atoi
+						flipflop = !flipflop; 
+					}
+					else
+					{
+						y = atoi(temp);
+						flipflop = !flipflop;
+						vertices.push_back(aitVertex(tempVertices[x - 1], tempNormals[y - 1])); // join the vertex and normal, then send to vertices
+					}
 				}
 			}
 		}
 		else if (buff[0] == 'o' || buff[0] == '#') // if comment or object name, ignore
 		{
 		} // example input: o Cube
-		else if (buff[0] == 's') // TODO
+		else if (buff[0] == 's')
 		{
 		} // example input: s off
 	}
