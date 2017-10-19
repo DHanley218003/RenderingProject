@@ -16,7 +16,8 @@ struct SimpleVertex
 {
     glm::vec3		pos;	// Position
 	glm::vec4		colour;	// Colour
-	float colourMultiplier;
+	glm::vec2		multiplier; // size multiplier for x and y
+	float			colourMul;
 };
 
 static void renderSceneCallBack()
@@ -26,16 +27,19 @@ static void renderSceneCallBack()
     glEnableVertexAttribArray(0);
 	glEnableVertexAttribArray(1);
 	glEnableVertexAttribArray(2);
+	glEnableVertexAttribArray(3);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 32, 0);
-	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 32, (const GLvoid*)12);
-	glVertexAttribPointer(2, 1, GL_FLOAT, GL_FALSE, 32, (const GLvoid*)28);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 40, 0);
+	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, 40, (const GLvoid*)12);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 40, (const GLvoid*)28);
+	glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, 40, (const GLvoid*)36);
 
     glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
     glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
 	glDisableVertexAttribArray(2);
+	glDisableVertexAttribArray(3);
 
     glutSwapBuffers();
 }
@@ -51,9 +55,9 @@ static void createVertexBuffer()
 	// Create vertex buffer
 	SimpleVertex vertices[] =
 	{
-		{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec4(1.0f, 0.0f, 0.0f, 0.5f), 0.25f},
-		{glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec4(0.0f, 1.0f, 0.0f, 2.0f), 0.75f},
-		{glm::vec3( 0.0f, 0.5f, 0.0f),  glm::vec4(0.0f, 0.0f, 1.0f, 0.1f), 0.5f}
+		{glm::vec3(-0.5f, -0.5f, 0.0f), glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), glm::vec2(1.5f,0.5f), 0.0f},
+		{glm::vec3(0.5f, -0.5f, 0.0f),  glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), glm::vec2(0.5f,1.5f), 1.0f},
+		{glm::vec3( 0.0f, 0.5f, 0.0f),  glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), glm::vec2(1.0f,1.0f), 1.5f}
 	};
     
  	glGenBuffers(1, &VBO);
