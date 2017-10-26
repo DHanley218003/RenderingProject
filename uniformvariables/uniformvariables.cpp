@@ -4,6 +4,7 @@
 #include <GL/glew.h>
 #include <GL/freeglut.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include <Windows.h>
 #include "aiterror.h"
 #include <ctime>
@@ -17,6 +18,8 @@ GLuint VBO;
 GLuint gTransformLocation;
 GLuint gColourModifier;
 GLuint gTime;
+GLuint gMat4;
+mat4 MVP = mat4(2.0f);
 const int NUMVERTS = 3;
 clock_t startTime;
 double secondsPassed;
@@ -34,7 +37,7 @@ void init(void) {
 }
 
 void idle(void) {
-	//secondsPassed = (clock() - startTime) / CLOCKS_PER_SEC;
+	secondsPassed = (clock() - startTime) / CLOCKS_PER_SEC;
 	int t;
 	/* Delta time in seconds. */
 	t = glutGet(GLUT_ELAPSED_TIME);
@@ -55,14 +58,16 @@ static void renderSceneCallBack()
 	glVertexAttribPointer(1, 4, GL_FLOAT, GL_FALSE, sizeof(SimpleVertex), (const GLvoid*)12);
 
 	static float transform = 0.0f;
-	transform += dt + 1;
-	for (unsigned int i = 1; i <= 10; i++)
-	{
-		glUniform1f(gTransformLocation, sin(transform+i));
-		glUniform1f(gColourModifier, sin(transform+i));
-		glUniform1f(gTime, GLUT_ELAPSED_TIME);
-		glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
-	}
+	transform += dt * 1;
+	//for (unsigned int i = 1; i <= 10; i++)
+	
+		//glUniform1f(gTransformLocation, sin(transform+i));
+		//glUniform1f(gColourModifier, sin(transform+i));
+		//glUniform1f(gTime, GLUT_ELAPSED_TIME);
+	MVP = translate(mat4(1.0f),vec3(transform,0.0f,0.0f));
+	glUniformMatrix4fv(gMat4, 1, GL_FALSE, &MVP[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+	
     glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1); 
 
@@ -186,17 +191,24 @@ static void buildShaders()
 
     glUseProgram(shaderProgram);
 
-    gTransformLocation = glGetUniformLocation(shaderProgram, "gTransform");
-    assert(gTransformLocation != 0xFFFFFFFF);
-	gColourModifier = glGetUniformLocation(shaderProgram, "gColourMod");
-	assert(gColourModifier != 0xFFFFFFFF);
-	gTime = glGetUniformLocation(shaderProgram, "gTime");
+    //gTransformLocation = glGetUniformLocation(shaderProgram, "gTransform");
+    //assert(gTransformLocation != 0xFFFFFFFF);
+	//gColourModifier = glGetUniformLocation(shaderProgram, "gColourMod");
+	//assert(gColourModifier != 0xFFFFFFFF);
+	//gTime = glGetUniformLocation(shaderProgram, "gTime");
+	//assert(gTime != 0xFFFFFFFF);
+	gMat4 = glGetUniformLocation(shaderProgram, "gMat4");
 	assert(gTime != 0xFFFFFFFF);
 }
 
 int main(int argc, char** argv)
 {
-    glutInit(&argc, argv);
+
+
+	//create matrix4, send to vertexshader and multipy every vertex by this matrix
+	
+	
+	glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE|GLUT_RGBA);
     glutInitWindowSize(1024, 768);
     glutInitWindowPosition(100, 100);
@@ -220,7 +232,6 @@ int main(int argc, char** argv)
 	createVertexBuffer();
 
     glutMainLoop();
-    
     return 0;
 }
 

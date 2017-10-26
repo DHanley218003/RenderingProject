@@ -20,68 +20,75 @@ bool aitMesh::loadFromObj(std::string path)
 	float tempx, tempy, tempz; // used to create vertex and vertex normals
 	unsigned int x, y; // used to pair up vertex and vertex normals
 
-	std::ifstream infile(path);
-	std::stringstream ss;
-	std::stringstream ss2;
+	try {
+		std::ifstream infile(path);
+		std::stringstream ss;
+		std::stringstream ss2;
 
-	while(true)
-	{
-		if(infile.eof()) // exits loop when it reaches the end of the file
-			break;
-		infile.getline( buff, BUFFSIZE);
-		ss.clear();
-		ss.str(""); // clears and sets the string stream buffer to empty
-		ss << buff;
-		if(buff[0]=='v') // if vector
+		while (true)
 		{
-			if(buff[1]=='n') // if vector normal
+			if (infile.eof()) // exits loop when it reaches the end of the file
+				break;
+			infile.getline(buff, BUFFSIZE);
+			ss.clear();
+			ss.str(""); // clears and sets the string stream buffer to empty
+			ss << buff;
+			if (buff[0] == 'v') // if vector
 			{
-				ss >> temp >> tempx >> tempy >> tempz; // example input: v -1.000000 -1.000000 1.000000
-				tempNormals.push_back(glm::vec3(tempx, tempy, tempz)); 
-			}
-			else
-			{
-				ss >> temp >> tempx >> tempy >> tempz;
-				tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
-			}
-		}
-		else if(buff[0]=='f') // if faces
-		{
-			ss >> temp; // discard 'f' character
-			for (unsigned int j = 0; j < 3; j++) // run three times to fully define polygon
-			{
-				ss >> temp;
-				for (unsigned int i = 0; i < 10; i++) // Changes all forward slashes to whitespace, then sends to a second stringstream
+				if (buff[1] == 'n') // if vector normal
 				{
-					if (temp[i] == '/')
-						temp[i] = ' ';
+					ss >> temp >> tempx >> tempy >> tempz; // example input: v -1.000000 -1.000000 1.000000
+					tempNormals.push_back(glm::vec3(tempx, tempy, tempz));
 				}
-				ss2.clear();
-				ss2.str(""); // clears and sets the string stream buffer to empty
-				ss2 << temp;
-				bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
-				while (ss2 >> temp) // example input: f 1//1 2//1 3//1
+				else
 				{
-					if (flipflop)
-					{
-						x = atoi(temp); // must be converted to c string to use atoi
-						flipflop = !flipflop; 
-					}
-					else
-					{
-						y = atoi(temp);
-						flipflop = !flipflop;
-						vertices.push_back(aitVertex(tempVertices[x - 1], tempNormals[y - 1])); // join the vertex and normal, then send to vertices
-					}
+					ss >> temp >> tempx >> tempy >> tempz;
+					tempVertices.push_back(glm::vec3(tempx, tempy, tempz));
 				}
 			}
+			else if (buff[0] == 'f') // if faces
+			{
+				ss >> temp; // discard 'f' character
+				for (unsigned int j = 0; j < 3; j++) // run three times to fully define polygon
+				{
+					ss >> temp;
+					for (unsigned int i = 0; i < 10; i++) // Changes all forward slashes to whitespace, then sends to a second stringstream
+					{
+						if (temp[i] == '/')
+							temp[i] = ' ';
+					}
+					ss2.clear();
+					ss2.str(""); // clears and sets the string stream buffer to empty
+					ss2 << temp;
+					bool flipflop = true; // faces come in x//y, so flipflop alternates which is loaded
+					while (ss2 >> temp) // example input: f 1//1 2//1 3//1
+					{
+						if (flipflop)
+						{
+							x = atoi(temp); // must be converted to c string to use atoi
+							flipflop = !flipflop;
+						}
+						else
+						{
+							y = atoi(temp);
+							flipflop = !flipflop;
+							vertices.push_back(aitVertex(tempVertices[x - 1], tempNormals[y - 1])); // join the vertex and normal, then send to vertices
+						}
+					}
+				}
+			}
+			else if (buff[0] == 'o' || buff[0] == '#') // if comment or object name, ignore
+			{
+			} // example input: o Cube
+			else if (buff[0] == 's')
+			{
+			} // example input: s off
 		}
-		else if (buff[0] == 'o' || buff[0] == '#') // if comment or object name, ignore
-		{
-		} // example input: o Cube
-		else if (buff[0] == 's')
-		{
-		} // example input: s off
+		return true;
 	}
-	return true;
+	catch (std::string e)
+	{
+		std::cout << e << std::endl;
+	}
+	return false;
 }
