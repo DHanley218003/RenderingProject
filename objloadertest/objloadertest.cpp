@@ -38,7 +38,7 @@ static void renderSceneCallBack()
 
 	// Create our world space to view space transformation matrix
 	mat4 worldToViewTransform = lookAt(
-		vec3(0.0f,2.0f,8.0f), // The position of your camera, in world space
+		vec3(0.0f,2.0f,16.0f), // The position of your camera, in world space
 		vec3(0.0f,0.0f,0.0f), // where you want to look at, in world space
 		vec3(0.0f,1.0f,0.0f)  // Camera up direction (set to 0,-1,0 to look upside-down)
 		); 
@@ -68,8 +68,70 @@ static void renderSceneCallBack()
 	angle+=1.0f;
 	modelToWorldTransform = rotate(modelToWorldTransform, angle, vec3(0.0f, 1.0f, 0.0f));
 
+	/*
+	Pworld = M * Plocal;
+	Pview = V * Pworld;
+	Pndc = P * Pview;
+	where M = model, V = view and P = projection.*/
+
+	//sun
+	//glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	//glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	//planet 1
+	modelToWorldTransform = mat4(1.0f);
+	static float planetOrbit1 = 3.0f;
+
+	mat4 planet1Transform = rotate(modelToWorldTransform, angle, vec3(0.0f, 2.0f, 0.0f))
+		* translate(modelToWorldTransform, vec3(planetOrbit1, 0.0f, 0.0f))
+		* rotate(modelToWorldTransform, angle, vec3(0.0f, 1.0f, 0.0f))
+		* scale(modelToWorldTransform, vec3(0.5f));
+
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &planet1Transform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	//moon 1
+	modelToWorldTransform = mat4(1.0f);
+	static float moonOrbit1 = 0.6f;
+
+	
+
 	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	
+	
+	//moon 2
+	modelToWorldTransform = mat4(1.0f);
+	static float moonOrbit2 = 0.75f;
+
+	modelToWorldTransform = translate(modelToWorldTransform, vec3(0.0f, 0.0f, 0.0f))
+		* rotate(modelToWorldTransform, angle, vec3(0.0f, 3.0f, 0.0f))
+		* scale(modelToWorldTransform, vec3(0.35f))
+		* inverse(planet1Transform);
+
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &planet1Transform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	/*
+	//planet 2
+	modelToWorldTransform = mat4(1.0f);
+	static float planetOrbit2 = 6.0f;
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	//moon 3
+	modelToWorldTransform = mat4(1.0f);
+	static float moonOrbit3 = 0.2f;
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+
+	//moon 4
+	modelToWorldTransform = mat4(1.0f);
+	static float moonOrbit4 = 1.0f;
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS); 
+	*/
 
     glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -86,7 +148,7 @@ static void initializeGlutCallbacks()
 static void createVertexBuffer()
 {
 	aitMesh mesh;
-	if(!mesh.loadFromObj("assets/sphere.obj"))
+	if(!mesh.loadFromObj("assets/box.obj"))
 	{
 		cerr<<"Error loading mesh from obj file."<<endl;
 		system("pause");
