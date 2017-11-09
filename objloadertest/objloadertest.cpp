@@ -27,6 +27,9 @@ GLuint gAmbientLightIntensityLoc;
 GLuint gDirectionalLightIntensityLoc;
 GLuint gDirectionalLightDirectionLoc;
 
+//colour
+GLuint gColour;
+
 // Materials uniform location
 GLuint gKaLoc;
 GLuint gKdLoc;
@@ -75,63 +78,75 @@ static void renderSceneCallBack()
 	where M = model, V = view and P = projection.*/
 
 	//sun
-	//glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
-	//glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
+	glUniform4f(gColour, 1.0f, 1.0f, 1.0f, 1.0f);
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
 	//planet 1
+	glUniform4f(gColour, 1.0f, 0.0f, 1.0f, 1.0f);
 	modelToWorldTransform = mat4(1.0f);
-	static float planetOrbit1 = 3.0f;
+	static float planetOrbit1 = 4.5f;
 
-	mat4 planet1Transform = rotate(modelToWorldTransform, angle, vec3(0.0f, 2.0f, 0.0f))
+
+	// shrink > rotate(planet spin) > translate(orbit distance) > rotate(orbit)
+	modelToWorldTransform = rotate(modelToWorldTransform, angle, vec3(0.0f, 2.0f, 0.0f))
 		* translate(modelToWorldTransform, vec3(planetOrbit1, 0.0f, 0.0f))
 		* rotate(modelToWorldTransform, angle, vec3(0.0f, 1.0f, 0.0f))
 		* scale(modelToWorldTransform, vec3(0.5f));
 
-	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &planet1Transform[0][0]);
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
 	//moon 1
-	modelToWorldTransform = mat4(1.0f);
-	static float moonOrbit1 = 0.6f;
+	glUniform4f(gColour, 1.0f, 1.0f, 0.0f, 1.0f);
+	static float moonOrbit1 = 3.6f;
 
-	
+	mat4 moonTransform = rotate(translate(rotate(scale(modelToWorldTransform, vec3(0.5f)), angle, vec3(0.0f, 1.0f, 0.0f)), vec3(moonOrbit1, 0.0f, 0.0f)), angle, vec3(0.0f, 1.0f, 0.0f));
 
-	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &moonTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
 	
 	
 	//moon 2
-	modelToWorldTransform = mat4(1.0f);
-	static float moonOrbit2 = 0.75f;
+	glUniform4f(gColour, 1.0f, 1.0f, 0.0f, 0.0f);
+	static float moonOrbit2 = -5.75f;
 
-	modelToWorldTransform = translate(modelToWorldTransform, vec3(0.0f, 0.0f, 0.0f))
-		* rotate(modelToWorldTransform, angle, vec3(0.0f, 3.0f, 0.0f))
-		* scale(modelToWorldTransform, vec3(0.35f))
-		* inverse(planet1Transform);
+	moonTransform = rotate(translate(rotate(scale(modelToWorldTransform, vec3(0.25f)), angle, vec3(0.0f, 2.0f, 0.0f)), vec3(moonOrbit2, 0.0f, 0.0f)), angle, vec3(0.0f, 2.0f, 0.0f));
 
-	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &planet1Transform[0][0]);
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &moonTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
-	/*
+	
 	//planet 2
+	glUniform4f(gColour, 1.0f, 1.0f, 0.0f, 0.0f);
 	modelToWorldTransform = mat4(1.0f);
-	static float planetOrbit2 = 6.0f;
+	static float planetOrbit2 = -16.0f;
+
+	modelToWorldTransform = rotate(translate(rotate(scale(modelToWorldTransform, vec3(0.25f)), angle, vec3(0.0f, 1.0f, 5.0f)), vec3(planetOrbit2, 0.0f, 0.0f)), angle, vec3(0.0f, 1.0f, 0.0f));
+
 	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
 	//moon 3
-	modelToWorldTransform = mat4(1.0f);
-	static float moonOrbit3 = 0.2f;
-	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glUniform4f(gColour, 1.0f, 0.0f, 1.0f, 0.0f);
+	moonTransform = mat4(1.0f);
+	static float moonOrbit3 = -30.2f;
+
+	moonTransform = rotate(translate(rotate(scale(modelToWorldTransform, vec3(0.10f)), angle, vec3(0.0f, 2.0f, 0.0f)), vec3(moonOrbit3, 0.0f, 0.0f)), angle, vec3(0.0f, 2.0f, 0.0f));
+
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &moonTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS);
 
 	//moon 4
-	modelToWorldTransform = mat4(1.0f);
-	static float moonOrbit4 = 1.0f;
-	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &modelToWorldTransform[0][0]);
+	glUniform4f(gColour, 1.0f, 0.0f, 0.0f, 1.0f);
+	static float moonOrbit4 = 3.0f;
+
+	moonTransform = rotate(translate(rotate(scale(modelToWorldTransform, vec3(0.75f)), angle, vec3(0.0f, 2.0f, 0.0f)), vec3(moonOrbit4, 0.0f, 0.0f)), angle, vec3(0.0f, 2.0f, 0.0f));
+
+	glUniformMatrix4fv(gModelToWorldTransformLoc, 1, GL_FALSE, &moonTransform[0][0]);
 	glDrawArrays(GL_TRIANGLES, 0, NUMVERTS); 
-	*/
+	
 
     glDisableVertexAttribArray(0);
 	glDisableVertexAttribArray(1);
@@ -148,7 +163,7 @@ static void initializeGlutCallbacks()
 static void createVertexBuffer()
 {
 	aitMesh mesh;
-	if(!mesh.loadFromObj("assets/box.obj"))
+	if(!mesh.loadFromObj("assets/sphere.obj"))
 	{
 		cerr<<"Error loading mesh from obj file."<<endl;
 		system("pause");
@@ -268,9 +283,11 @@ static void buildShaders()
 	gDirectionalLightDirectionLoc = glGetUniformLocation(shaderProgram, "gDirectionalLightDirection");
 	assert(gDirectionalLightDirectionLoc != 0xFFFFFFFF);
     gKaLoc = glGetUniformLocation(shaderProgram, "gKa");
-	assert(gDirectionalLightDirectionLoc != 0xFFFFFFFF);
+	assert(gKaLoc != 0xFFFFFFFF);
     gKdLoc = glGetUniformLocation(shaderProgram, "gKd");
-	assert(gDirectionalLightDirectionLoc != 0xFFFFFFFF);
+	assert(gKdLoc != 0xFFFFFFFF);
+	gColour = glGetUniformLocation(shaderProgram, "colour");
+	assert(gColour != 0xFFFFFFFF);
 }
 
 
